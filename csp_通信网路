@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int N=1001;
+vector<int> v1[N],v2[N];//邻接数组 
+bool reach[N];
+bool reach2[N];
+int ans=0;
+
+void bfs(int start,int n)
+{//包括正向和反向两次搜索，正向可到达的点记录在reach数组中，反向遍历将可以到达起始点的点记录在reach2中 
+	for(int i=1;i<=n;i++)
+	{
+		reach[i]=reach2[i]=false;
+	}
+	queue<int> q;
+	q.push(start);
+	reach[start]=true;
+	while(!q.empty())
+	{
+		int x=q.front();
+		q.pop();
+		for(int i=0;i<v1[x].size();i++)
+		{
+			if(!reach[v1[x][i]])
+			{	
+				reach[v1[x][i]]=true;
+				q.push(v1[x][i]);
+			}
+		}
+	}
+	q.push(start);
+	while(!q.empty())
+	{
+		int x=q.front();
+		q.pop();
+		for(int i=0;i<v2[x].size();i++)
+		{
+			if(!reach2[v2[x][i]])
+			{	
+				reach2[v2[x][i]]=true;
+				q.push(v2[x][i]);
+			}
+		}
+	}
+	
+	int i;
+	for(i=1;i<=n;i++)
+		if(!reach[i]&&!reach2[i]) break;
+	if(i==n+1) ans++;
+}
+
+
+int main()
+{
+	freopen("c.in","r",stdin);
+	int n,M;
+	cin>>n>>M;
+
+	int from,to;
+	for(int i=0;i<M;i++)
+	{
+		cin>>from>>to;
+		v1[from].push_back(to);
+		v2[to].push_back(from);//反向邻接数组 
+	}
+	for(int i=1;i<=n;i++)
+	{ 
+		bfs(i,n);
+	}
+
+	cout<<ans;
+	return 0;
+}
