@@ -1,0 +1,91 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+const int N=501;
+bool vis[N];
+ll m[N][N],m0[N][N];
+ll dis[N],dis0[N];
+ll inf=1e18;
+
+void spfa(int start,int n)
+{
+	queue<int> q;
+	for(int i=1;i<=n;i++)
+	{
+		vis[i]=false;
+		dis[i]=dis0[i]=inf;
+		
+	}
+	vis[start]=true;
+	dis[start]=dis0[start]=0;
+	q.push(start);
+	while(!q.empty())
+	{
+		int x=q.front();
+		q.pop();
+		vis[x]=false;
+		for(int i=1;i<=n;i++) 
+		{
+			if(dis[i]>dis[x]+m[x][i])
+			{
+				dis[i]=dis[x]+m[x][i];
+				if(!vis[i]) 
+				{
+					vis[i]=true;
+					q.push(i);
+				}
+			}
+			if(dis[i]>dis0[x]+m[x][i])
+			{
+				dis[i]=dis0[x]+m[x][i];
+				if(!vis[i]) 
+				{
+					vis[i]=true;
+					q.push(i);
+				}
+			}
+			if(m0[x][i]!=inf)
+			{
+				if(dis0[i]>dis[x]+m0[x][i]*m0[x][i])
+				{
+					dis0[i]=dis[x]+m0[x][i]*m0[x][i];
+				if(!vis[i]) 
+				{
+					vis[i]=true;
+					q.push(i);
+				}
+				}	
+			}
+			
+		}
+	}
+}
+
+
+int main()
+{
+	freopen("c.in","r",stdin);
+	int n,num;
+	cin>>n>>num;
+	for(int i=1;i<=n;i++)
+		for(int j=1;j<=n;j++)
+			m[i][j]=m0[i][j]=inf;
+	ll a,u,v,w;
+	for(int i=0;i<num;i++)
+	{
+		cin>>a>>u>>v>>w;
+		if(a==0&&m[u][v]>w) m[u][v]=m[v][u]=w;
+		if(a==1&&m0[u][v]>w) m0[u][v]=m0[v][u]=w;
+	}
+	for(int k=1;k<=n;k++)
+		for(int i=1;i<=n;i++)
+			for(int j=1;j<=i;j++)
+			{
+				if(m0[i][j]>m0[i][k]+m0[k][j])
+					m0[j][i]=m0[i][j]=m0[i][k]+m0[k][j];
+			}
+	spfa(1,n);
+	cout<<min(dis[n],dis0[n]);
+	return 0;
+}
