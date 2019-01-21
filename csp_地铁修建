@@ -1,0 +1,90 @@
+#include<bits/stdc++.h> 
+using namespace std;
+typedef long long ll;
+const ll N=100001;
+int pre[N];
+
+int find(int a)
+{
+	int t=a;
+	while(pre[t]!=t) t=pre[t];
+	int x=a,j;
+	while(x!=t)
+	{
+		j=pre[x];
+		pre[x]=t;
+		x=j;
+	}
+	return t;
+}
+void mix(int a,int b)
+{
+	int x=find(a),y=find(b);
+	if(x!=y)
+		pre[x]=y;
+}
+struct Edge
+{
+	int v;
+	int u;
+	int w;
+	Edge(int a=0,int b=0,int c=0)
+	{
+		v=a;u=b;c=w;
+	}
+};
+struct cmp
+{
+	bool operator() (Edge& a,Edge& b)
+	{
+		return a.w>b.w;
+	}
+};
+priority_queue<Edge,vector<Edge>,cmp> heap;
+
+ll kru(int n)
+{
+	for(int i=1;i<=n;i++)
+	{
+		pre[i]=i;
+	}
+	int e=n;
+	Edge l;
+	int ans=0;
+	while(e!=1)
+	{
+		l=heap.top();
+		heap.pop();
+		int x=find(l.u);
+		int y=find(l.v);
+		if(x!=y)
+		{
+			mix(x,y);
+			e--;
+			if(find(n)==find(1))
+			{//只需要1和n在同一个连通分支即可
+				ans=l.w;
+				break;	
+			}
+			
+		}
+	}
+	return ans;
+}
+
+int main()
+{
+	int n,M;
+	cin>>n>>M;
+	ll u,v;
+	
+	for(int i=0;i<M;i++)
+	{	
+		Edge e; 
+		cin>>e.u>>e.v>>e.w;
+		heap.push(e);
+	}
+	ll ans=kru(n);
+	cout<<ans;
+	return 0;
+}
