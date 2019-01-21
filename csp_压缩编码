@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+//石子合并问题,参考博客https://blog.csdn.net/tigerisland45/article/details/61622152 
+typedef long long ll;
+ll inf=1e18;
+const int N=1001;
+ll v[N];
+ll dp[N][N];
+ll p[N][N];
+ll sum[N];
+
+void solve(int n) 
+{
+	for(int r=1;r<=n;r++)
+	{
+		for(int i=1;i+r<=n;i++)
+		{
+			int j=i+r;
+			for(int k=p[i][j-1];k<=p[i+1][j];k++)
+			{
+				ll val=dp[i][k]+dp[k+1][j]+sum[j]-sum[i-1];
+				if(dp[i][j]>val)
+				{
+					dp[i][j]=val;
+					p[i][j]=k;
+				}
+			}
+		}
+	}
+}
+
+int main()
+{
+	int n;
+	cin>>n;
+	sum[0]=0;
+	for(int i=1;i<=n;i++)
+	{
+		cin>>v[i];
+		sum[i]=sum[i-1]+v[i];
+	}
+	for(int i=1;i<=n;i++)
+		for(int j=1;j<=n;j++)
+			dp[i][j]=inf;
+			
+	for(int i=1;i<=n;i++)
+	{
+		dp[i][i]=0;	
+		p[i][i]=i;
+	}	
+	solve(n);
+	cout<<dp[1][n];
+	return 0;
+}
