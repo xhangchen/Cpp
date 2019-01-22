@@ -1,5 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
+//参考博客https://blog.csdn.net/tigerisland45/article/details/60084015
 
 typedef long long ll;
 ll inf=1e18;
