@@ -9,12 +9,10 @@ struct _node
 {
 	int r;
 	int c;
-	int from_r;
-	int from_c;
 	ll curr;
-	_node(int a=0,int b=0,int cc=0,int d=0,ll e=0)
+	_node(int a=0,int b=0,ll e=0)
 	{
-		r=a;c=b;from_r=cc;from_c=d;curr=e;
+		r=a;c=b;curr=e;
 	}
 };
 ll bfs(int n,int m)
@@ -24,8 +22,8 @@ ll bfs(int n,int m)
 	
 	queue<_node> q;
 	reach[1][1][0]=true;
-	q.push(_node(1,1,1,1,0));
-	_node last=_node(1,1,1,1,0);
+	q.push(_node(1,1,0));
+	_node last=_node(1,1,0);
 	while(!q.empty())
 	{
 		
@@ -37,7 +35,7 @@ ll bfs(int n,int m)
 		{ 
 			if(!reach[x.r+1][x.c][t+1])
 			{
-				q.push(_node(x.r+1,x.c,x.r,x.c,x.curr+1));
+				q.push(_node(x.r+1,x.c,x.curr+1));
 				reach[x.r+1][x.c][t+1]=true;
 			}
 		}
@@ -45,7 +43,7 @@ ll bfs(int n,int m)
 		{
 			if(!reach[x.r][x.c+1][t+1])
 			{
-				q.push(_node(x.r,x.c+1,x.r,x.c,x.curr+1));
+				q.push(_node(x.r,x.c+1,x.curr+1));
 				reach[x.r][x.c+1][t+1]=true;
 			}
 		}
@@ -53,7 +51,7 @@ ll bfs(int n,int m)
 		{
 			if(!reach[x.r-1][x.c][t+1])
 			{
-				q.push(_node(x.r-1,x.c,x.r,x.c,x.curr+1));
+				q.push(_node(x.r-1,x.c,x.curr+1));
 				reach[x.r-1][x.c][t+1]=true;
 			}
 		}
@@ -61,7 +59,7 @@ ll bfs(int n,int m)
 		{
 			if(!reach[x.r][x.c-1][t+1])
 			{
-				q.push(_node(x.r,x.c-1,x.r,x.c,x.curr+1));
+				q.push(_node(x.r,x.c-1,x.curr+1));
 				reach[x.r][x.c-1][t+1]=true;
 			}
 		}
@@ -70,7 +68,7 @@ ll bfs(int n,int m)
 
 int main()
 {
-	//freopen("c.in","r",stdin);
+	freopen("c.in","r",stdin);
 	int n,m,t;
 	cin>>n>>m>>t;
 	int r,c,a,b;
