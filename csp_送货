@@ -1,0 +1,102 @@
+#include<bits/stdc++.h> 
+using namespace std;
+typedef long long ll;
+const int N=10001;
+int degree[N];//每个点的度数
+bool g[N][N];//储存无向图
+stack<int> s;//储存欧拉通路的顶点
+int pre[N];
+
+int find(int r)
+{
+	int t=r;
+	while(pre[t]!=t) t=pre[t];
+	int i=r,j;
+	while(i!=t)
+	{
+		j=pre[i];
+		pre[i]=t;
+		i=pre[i];
+	}
+	return t;
+}
+void mix(int a,int b)
+{
+	int x=find(a);
+	int y=find(b);
+	if(x!=y)
+		pre[y]=x;
+}
+
+void dfs(int u,int n)
+{
+	for(int i=1;i<=n;i++)
+	{
+		if(g[u][i])
+		{
+			g[u][i]=g[i][u]=false;
+			dfs(i,n);
+			s.push(i);
+		}
+	}
+}
+
+
+int main()
+{
+	//freopen("c.in","r",stdin);
+	int n,m;
+	cin>>n>>m;
+	for(int i=1;i<=n;i++)
+	{
+		degree[i]=0;
+		pre[i]=i;
+		for(int j=1;j<=n;j++)
+		{
+			g[i][j]=false;
+		}
+	}
+	
+	int u,v;
+	for(int i=0;i<m;i++)
+	{
+		cin>>u>>v;
+		mix(u,v);
+		g[u][v]=true;
+		g[v][u]=true;
+		degree[u]++;
+		degree[v]++;
+	}
+	int x_count=0;//x为奇数，y为偶数 
+	bool t=true;
+	int z=find(1);
+	for(int i=1;i<=n;i++)
+	{
+		if(degree[i]%2!=0) x_count++;
+		if(find(i)!=z) 
+		{//图不连通
+			cout<<-1;
+			return 0;
+		}
+	}	
+	if(x_count==1||x_count>2)
+	{
+		cout<<-1;
+		return 0;
+	}
+	if(x_count==2&&degree[1]%2==0)
+	{
+		cout<<-1;
+		return 0;
+	}
+	
+	dfs(1,n);
+	s.push(1);
+	while(!s.empty())
+	{
+		cout<<s.top()<<" ";
+		s.pop();
+	}
+	return 0;
+	
+}
