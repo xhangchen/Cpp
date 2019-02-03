@@ -1,0 +1,56 @@
+//求树的直径（最长路径），通过2次dfs，第一次任意起点，得到其最长路径的端点u,再已u为起点dfs得到的最长路径即为整个树的最长路径
+
+#include<bits/stdc++.h> 
+using namespace std;
+typedef long long ll;
+const int N=20002;
+ll max_=0;
+ll curr=-1;
+int number;
+vector<int>tree[N];//tree[i]存储与i相邻的点
+int vis[N];
+void dfs(int u)
+{
+	if(tree[u].empty()||vis[u]==1) return;
+	curr++;
+	vis[u]=1;
+	if(curr>max_)
+	{
+		max_=curr;
+		number=u;
+	}
+	for(int i=0;i<tree[u].size();i++)
+	{
+		dfs(tree[u][i]);
+	}
+	curr--;
+}
+
+int main()
+{
+//	freopen("c.in","r",stdin);
+	int n,m;
+	cin>>n>>m;
+	int temp;
+	for(int i=2;i<=n;i++)
+	{
+		cin>>temp;
+		tree[temp].push_back(i);
+		tree[i].push_back(temp);
+	}
+	for(int i=1;i<=m;i++)
+	{//终端电脑编号从n+1开始
+		cin>>temp;
+		tree[temp].push_back(i+n);
+		tree[i+n].push_back(temp);
+	}
+	for(int i=1;i<=n+m;i++)
+		 vis[i]=0;
+	dfs(1);
+	max_=0;
+	for(int i=1;i<=n+m;i++)
+		 vis[i]=0;
+	dfs(number);
+	cout<<max_;
+	return 0;
+}
