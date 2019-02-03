@@ -1,0 +1,76 @@
+//多个点同时出发进行bfs
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N=1001;
+int g[N][N];//表示(i,j) 处客户数量 
+bool vis[N][N];
+struct loc
+{
+	int x;
+	int y;
+	int c;
+	loc(int a=0,int b=0,int w=0)
+	{
+		x=a;
+		y=b;
+		c=w;
+	}
+}; 
+queue<loc> q;
+ll ans=0;
+int d[4][2]={{1,0},{-1,0},{0,1},{0,-1}};
+void bfs(int n)
+{
+	while(!q.empty())
+	{	
+		loc temp=q.front();
+		q.pop();
+		for(int i=0;i<4;i++)
+		{
+			int nx=temp.x+d[i][0];
+			int ny=temp.y+d[i][1];
+			if(nx<1||nx>n||ny<1||ny>n) continue;
+			if(!vis[nx][ny])
+			{
+				ans+=(temp.c+1)*g[nx][ny];
+				vis[nx][ny]=true;
+				q.push(loc(nx,ny,temp.c+1));
+		
+			}
+		}
+		
+	}
+}
+
+int main()
+{
+	//freopen("c.in","r",stdin);
+	int n,m,k,d,x,y,c;//k:客服数量 d:障碍数 
+	cin>>n>>m>>k>>d;
+	for(int i=1;i<=n;i++) 
+		for(int j=1;j<=n;j++)
+		{
+			vis[i][j]=false;
+			g[i][j]=0;
+			}
+	
+	for(int i=0;i<m;i++)
+	{
+		cin>>x>>y;
+		q.push(loc(x,y,0));
+	}
+	for(int i=0;i<k;i++)
+	{
+		cin>>x>>y>>c;
+		g[x][y]+=c;
+	}
+	for(int i=0;i<d;i++)
+	{
+		cin>>x>>y;
+		vis[x][y]=true;
+	}
+	bfs(n);
+	cout<<ans<<endl;
+	return 0;
+}
