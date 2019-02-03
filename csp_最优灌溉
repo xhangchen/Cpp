@@ -1,0 +1,78 @@
+//最小生成树
+#include<bits/stdc++.h> 
+using namespace std;
+typedef long long ll;
+const int N=1001;
+ll ans=0;
+int pre[N];
+
+int find(int r)
+{
+	int t=r;
+	while(pre[t]!=t) t=pre[t];
+	int i=r,j;
+	while(i!=t)
+	{
+		j=pre[i];
+		pre[i]=t;
+		i=j;
+	}
+}
+void mix(int a,int b)
+{
+	int x=find(a);
+	int y=find(b);
+	if(x!=y) pre[x]=y;
+}
+struct Edge
+{
+	int v;
+	int u;
+	int w;
+	Edge(int a=0,int b=0,int c=0){
+		u=a;v=b;w=c;
+	}
+};
+struct cmp
+{
+	bool operator()(Edge a,Edge b)
+	{
+		return a.w>b.w;
+	}
+};
+priority_queue<Edge, vector<Edge>,cmp> heap;
+
+
+void kruskal(int n)
+{
+	while(n!=1)
+	{
+		Edge temp=heap.top();
+		heap.pop();
+		int x=find(temp.u);
+		int y=find(temp.v);
+		if(x!=y)
+		{
+			mix(x,y);
+			n--;
+			ans+=temp.w;
+		}
+	}
+}
+int main()
+{
+	//freopen("c.in","r",stdin);
+	int n,m;
+	cin>>n>>m;
+	int a,b,c;
+	for(int i=0;i<m;i++)
+	{
+		cin>>a>>b>>c;
+		heap.push(Edge(a,b,c));
+	}
+	for(int i=1;i<=n;i++)
+		pre[i]=i;
+	kruskal(n);
+	cout<<ans;
+	return 0;
+}
