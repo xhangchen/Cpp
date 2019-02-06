@@ -1,0 +1,78 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+bool vis[202];
+
+struct node
+{
+	ll x;
+	ll y;
+	ll num;
+	ll curr;//记录距离 
+	ll kcount;//到达此点时还能用kcount个可用路由器 
+	node(ll a=0,ll b=0,ll c=0,ll d=0,ll e=0)
+	{
+		x=a;y=b;num=c;curr=d;kcount=e;
+	}
+	
+	
+};
+node l[202];
+
+ll bfs(ll n,ll m,ll k,ll r)
+{
+	ll remain=k;
+	queue<node> q;
+	l[1].curr=0;
+	l[1].kcount=k;
+	q.push(l[1]);
+	vis[1]=true;
+	while(!q.empty())
+	{
+		node temp=q.front();
+		q.pop();
+		if(temp.x==l[2].x&&temp.y==l[2].y)
+			return temp.curr-1;
+	
+		for(ll i=2;i<=n+m;i++)
+		{
+			if(vis[i])continue;
+			if(pow(temp.x-l[i].x,2)+pow(temp.y-l[i].y,2)<=r*r)
+			{
+				if(i<=n)
+				{
+					vis[i]=true;
+					q.push(node(l[i].x,l[i].y,l[i].num,temp.curr+1,temp.kcount));
+				}
+				if(i>n&&temp.kcount!=0)
+				{
+					vis[i]=true;
+					q.push(node(l[i].x,l[i].y,l[i].num,temp.curr+1,temp.kcount-1));
+				}
+			}
+			
+		}
+	}
+}
+
+
+int main()
+{
+	freopen("c.in","r",stdin);
+	ll n,m,k,r;
+	cin>>n>>m>>k>>r;
+	ll x,y;
+	for(ll i=1;i<=n+m;i++)
+	{//1~n已有路由器，n+1~m可放路由器 
+		cin>>l[i].x>>l[i].y;
+		l[i].num=i;
+	}
+	for(ll i=1;i<=n+m;i++)
+	{
+		vis[i]=false;
+	}
+	ll ans=bfs(n,m,k,r);
+	cout<<ans;
+	return 0;
+ } 
