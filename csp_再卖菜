@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
-//差分约束，将问题转换为求带负权边的有向图中求最长路径，spfa求解
+//差分约束，将问题转换为求带负权边的有向图中求最长路径，spfa求解 参考博客https://blog.csdn.net/u014390156/article/details/82775736
 int a[305],dis[305],visit[305];
 int m[301][301];//m(i,j)表示Si到Sj的有向边 
 int n;
