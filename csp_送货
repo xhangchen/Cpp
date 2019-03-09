@@ -16,7 +16,7 @@ int find(int r)
 	{
 		j=pre[i];
 		pre[i]=t;
-		i=pre[i];
+		i=j;
 	}
 	return t;
 }
