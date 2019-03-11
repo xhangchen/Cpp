@@ -1,0 +1,136 @@
+//注: 地址和规则的末尾 都有或者无 '/' (<path>除外) 才能匹配 
+#include<bits/stdc++.h> 
+using namespace std;
+typedef long long ll;
+string name[101],p[101],q[101];
+int n,m;
+struct P
+{
+	int num;
+	string *l;
+	bool add;
+	P(int a=100){
+		num=a;
+		add=false;
+		l=new string[num];
+		for(int i=0;i<num;i++) l[i]="";
+	}
+}tp[101];
+
+struct str_num
+{//0 为str 1为 num 
+	int flag;
+	string  s;
+	ll num;
+	str_num(int a=0,string st="",ll c=0):flag(a),s(st),num(c){};
+};
+
+void fun(int index)
+{
+	if(p[index][p[index].size()-1]!='/'){
+		tp[index].add=true;
+		p[index]=p[index]+"/";
+	} 
+	int i=1,j,curr=0;
+	for(j=1;j<p[index].size();j++)
+	{
+		if(p[index][j]=='/'){
+			tp[index].l[curr++]=p[index].substr(i,j-i);
+			i=j+1;
+		}
+	}
+	tp[index].num=curr;
+}
+
+bool match2(string eg,string x,queue<str_num>& q)
+{//x可能为地址  <int> <str> <path>
+	
+		if(x[0]!='<') return eg==x;
+		if(x[1]=='i')
+		{//int
+			ll ans=0;
+			for(int i=0;i<eg.size();i++)
+			{
+				if(eg[i]>='0'&&eg[i]<='9')
+					ans=ans*10+eg[i]-'0';
+				else return false;
+			}
+			//cout<<ans<<" ";
+			q.push(str_num(1,"",ans));
+			return true;
+		}
+		if(x[1]=='s')
+		{//str
+			for(int i=0;i<eg.size();i++)
+				if(eg[i]=='/') return false;
+			//cout<<eg<<" ";
+			q.push(str_num(0,eg));
+			return true;
+		}
+}
+bool match(string eg,string x,int i)
+{
+	for(int i=0;i<eg.size();i++)
+		if(eg[i]!='/'&&eg[i]!='-'&&eg[i]!='_'&&eg[i]!='.'&&!(eg[i]<='Z'&&eg[i]>='A')&&!(eg[i]<='z'&&eg[i]>='a')&&!(eg[i]<='9'&&eg[i]>='0')) 
+			return false;
+	queue<str_num> q;
+	bool add_=false,ispath=false;
+	if(eg[eg.size()-1]!='/'){
+		eg=eg+"/";
+		add_=true;
+	}
+	int left=1,j,curr=0;
+	for(j=1;j<eg.size();j++)
+	{
+		if(eg[j]=='/'){
+			string temp=eg.substr(left,j-left);
+			if(tp[i].l[curr]=="<path>"){
+				//cout<<eg.substr(left,eg.size()-left)<<" "<<endl;
+				ispath=true;
+				if(!add_) q.push(str_num(0,eg.substr(left,eg.size()-left)));
+				else q.push(str_num(0,eg.substr(left,eg.size()-1-left)));
+				break;
+			}
+			if(curr>=tp[i].num) return false;
+			if(!match2(temp,tp[i].l[curr++],q)) return false;
+			left=j+1;
+		}
+	}
+	if(tp[i].add!=add_&&!ispath) return false;//都有或都无'/' 
+	if(curr!=tp[i].num&&!ispath) return false;
+	//cout<<q.size();
+	cout<<name[i]<<" ";
+	while(!q.empty()){
+		str_num temp=q.front();
+		q.pop();
+		if(temp.flag) cout<<to_string(temp.num)<<" ";
+		else cout<<temp.s<<" ";
+	}
+	cout<<endl;
+	return true;
+}
+
+int main()
+{
+	freopen("c2.in","r",stdin);
+	cin>>n>>m;
+	for(int i=1;i<=n;i++)
+	{
+		cin>>p[i]>>name[i];
+		fun(i);//分割p[i],保存在tp[i]中
+	}
+	for(int i=1;i<=m;i++)
+	{//q为地址 p为规则 
+		cin>>q[i];
+	}
+	int i,j;
+	for(i=1;i<=m;i++)
+	{
+		for(j=1;j<=n;j++)
+		{
+			if(match(q[i],p[j],j)) break;
+		}
+		if(j==n+1) cout<<404<<endl;
+	}
+	return 0;	
+}
