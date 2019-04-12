@@ -1,8 +1,7 @@
-//最后一步同级合并有问题,只有90分
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-
+int del[100001];
 struct Ip
 {//ip存ip地址的四个字节 
 	ll ip[4];
@@ -12,7 +11,8 @@ struct Ip
 	{
 		ip[0]=a;ip[1]=b;ip[2]=c;ip[3]=d;s=e;len=0;
 	}
-};
+} ;
+Ip preip[100001];
 
 int getlen(string& s)
 {//返回Ip前缀的长度 
@@ -78,7 +78,6 @@ void inilen(Ip& t)
 	else t.len=t.s[t.s.size()-1]-'0';
 }
 
-
 void getid(Ip& t)
 {//对结构体中的ip数组赋值 
 	int i,ans=0,curr=0;
@@ -105,7 +104,6 @@ void getid(Ip& t)
 		t.ip[count++]=0;
 	}
 }
-
 bool cmp(Ip a,Ip b)
 {//比较函数 
 	if(a.ip[0]!=b.ip[0]) return a.ip[0]<b.ip[0];
@@ -114,7 +112,7 @@ bool cmp(Ip a,Ip b)
 	if(a.ip[3]!=b.ip[3]) return a.ip[3]<b.ip[3];
 	return a.len<b.len;
 }
-void merge1(Ip *t,int n,int *del)
+void merge1(Ip *t,int n)
 {//第一次合并 
 	int i=0,j=1;
 	while(i<=n-1&&del[i])i++;
@@ -144,7 +142,8 @@ void merge1(Ip *t,int n,int *del)
 		}
 	}
 }
-void merge2(Ip *t,int n,int *del)
+
+void merge2(Ip *t,int n)
 {//第二次合并 
 	int i=0,j=1;
 	while(i<=n-1&&del[i])i++;
@@ -164,10 +163,11 @@ void merge2(Ip *t,int n,int *del)
 				else
 					t[i].s=t[i].s.substr(0,t[i].s.size()-2)+to_string(t[i].len-1);
 				if(i!=0){
-				t[i--].len--;
-				del[j]=1;
-				j=i+1;
-				while(i>=0&&del[i]) i--;}
+					t[i--].len--;
+					del[j]=1;
+					j=i+1;
+					while(i>=0&&del[i]) i--;
+				}
 				else{
 					t[i].len--;
 					del[j++]=1;
@@ -190,12 +190,12 @@ void merge2(Ip *t,int n,int *del)
 	}
 }
 
+
 int main()
 {
+//	freopen("c.in","r",stdin);
 	int n;
 	cin>>n;
-	Ip preip[n];
-	int del[n];
 	for(int i=0;i<n;i++)
 	{
 		cin>>preip[i].s;
@@ -204,14 +204,15 @@ int main()
 		inilen(preip[i]);
 	}
 	sort(preip,preip+n,cmp);
-	for(int k=0;k<n;k++)
+	for(int k=0;k<=n;k++)
 		del[k]=0;
-	merge1(preip,n,del);
-	merge2(preip,n,del);
+	merge1(preip,n);
+	merge2(preip,n);
 	for(int i=0;i<n;i++)
 	{
 		if(!del[i])//没有被删除的项 
 		cout<<preip[i].s<<endl;
 	}
 	return 0;	
+
 }
