@@ -1,0 +1,75 @@
+//https://blog.csdn.net/qq_40253901/article/details/100052818
+#include<bits/stdc++.h>
+using namespace std;
+
+
+struct pro
+{
+	int sr;
+	int flag;
+	pro(int a,int b){
+		sr=a;flag=b;
+	}
+};
+typedef struct pro pro;
+
+int main()
+{
+	int T,n;
+	cin>>T>>n;
+	getchar();
+	while(T--) 
+	{
+		queue<pro> q[n+1],empty;
+		for(int i=0;i<n;++i)
+		{
+			string op;
+			getline(cin,op);
+			for(int j=0;j<op.size();++j)
+			{
+				if(op[j]==' ') continue;
+				int sr_=(op[j]=='S')? 1:-1;
+				int temp=0;
+				while(j+1<op.size()&&op[j+1]!=' ')
+					temp=temp*10+(op[++j]-'0');
+				q[i].push(pro(sr_,temp));
+			}
+		}
+		int ischange=1;
+		int v[10001];
+		while(ischange)
+		{
+			memset(v,0,sizeof(v));
+			int p=0;
+			ischange=0;
+			while(p<n&&q[p].empty()) p++;
+			if(p==n) break;
+			v[p]=1;
+			int pto=q[p].front().flag;
+			while(!ischange&&!v[pto]&&!q[pto].empty())
+			{
+				v[pto]=1;
+				if(q[p].front().sr!=q[pto].front().sr&&q[p].front().flag==pto)
+				{
+					q[p].pop();
+					q[pto].pop();
+					ischange=1;
+					continue;
+				}
+				p=pto;
+				pto=q[p].front().flag;
+			}
+			
+			
+		}
+		int ans=0;
+		for(int i=0;i<n;i++)
+			if(!q[i].empty()){
+				ans=1;
+			} 
+		cout<<ans<<endl;
+
+		
+	}
+	return 0;
+}
