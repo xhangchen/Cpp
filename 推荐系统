@@ -1,0 +1,90 @@
+//https://blog.csdn.net/richenyunqi/article/details/101396817
+#include <bits/stdc++.h>
+using namespace std;
+typedef  long long ll;
+
+struct com
+{
+	ll id,score;
+	com(ll a,ll b):id(a),score(b){};
+	bool operator< (const com& c)const {
+		//if(this->score!=c.score) return this->score>c.score;
+		//else return this->id<c.id;
+		return this->score != c.score ? this->score > c.score : this->id < c.id;
+	}
+};
+ll mult=ll(1e9);
+//unordered_map
+//um[a] = commodities.insert(Commodity(a, score)).first;
+int main()
+{
+	ll m,n;
+	cin>>m>>n;
+	set<com> commod;
+	unordered_map<ll,set<com>::iterator> book;
+	
+	for(ll i=0;i<n;i++)
+	{
+		ll id_,sc;
+		cin>>id_>>sc;
+		for(ll j=0;j<m;j++)
+		{
+			ll index=j*mult+id_;
+			book[index]=commod.insert(com(index,sc)).first;
+		}
+	}
+	ll opnum;
+	cin>>opnum;
+	for(ll i=0;i<opnum;i++)
+	{
+		ll tap;
+		cin>>tap;
+		if(tap==1)
+		{
+			ll type,id_,sc;
+			cin>>type>>id_>>sc;
+			ll index=type*mult+id_;
+			book[index]=commod.insert(com(index,sc)).first;
+		}
+		else if(tap==2)
+		{
+			ll type,id_;
+			cin>>type>>id_;
+			ll index=type*mult+id_;
+			commod.erase(book[index]);
+			book.erase(index);
+		}
+		else{
+			vector<int> k(m);
+			vector<vector<ll>> ans(m);
+			ll K;
+			cin>>K;
+			for(int j=0;j<m;j++)
+				cin>>k[j];
+			for(auto &ti:commod)
+			{
+				ll type=ti.id/mult;
+				ll num=ti.id%mult;
+				if(ans[type].size()<k[type])
+				{
+					ans[type].push_back(num);
+					K--;
+					if(K==0) break;
+				}
+			}
+			for(auto &x:ans)
+			{
+				if(x.size()==0)
+				cout<<-1<<endl;
+				else
+				{
+					for(auto &y:x)
+					cout<<y<<" ";
+				cout<<endl;
+				}
+				
+			}
+		}
+	}
+	return 0;
+}
